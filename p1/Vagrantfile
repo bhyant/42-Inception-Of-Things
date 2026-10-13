@@ -1,0 +1,32 @@
+IP_CONTROLLER = "192.168.56.110"
+IP_AGENT = "192.168.56.111"
+LOGIN = "tbhuiyan"
+
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "cloud-image/debian-13"
+  config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.ssh.insert_key = true
+  config.vm.provider :libvirt do |libvirt|
+    libvirt.driver = "kvm"
+    libvirt.uri = 'qemu:///system'
+    libvirt.default_prefix = ""
+    libvirt.cpus = 1
+  end
+
+  config.vm.define "#{LOGIN}S" do |control|
+    control.vm.hostname = "#{LOGIN}S"
+    control.vm.network :private_network, ip: IP_CONTROLLER
+    control.vm.provider :libvirt do |libvirt|
+      libvirt.memory = 1024
+    end
+  end
+
+  config.vm.define "#{LOGIN}SW" do |agent|
+    agent.vm.hostname = "#{LOGIN}SW"
+    agent.vm.network :private_network, ip: IP_AGENT
+    agent.vm.provider :libvirt do |libvirt|
+      libvirt.memory = 512
+    end
+  end
+end
