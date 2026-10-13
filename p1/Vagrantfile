@@ -6,10 +6,13 @@ LOGIN = "tbhuiyan"
 Vagrant.configure("2") do |config|
   config.vm.box = "cloud-image/debian-13"
   config.vm.synced_folder ".", "/vagrant", disabled: true
+  config.vm.synced_folder "./secrets/", "/secrets/", create: true, type: "virtiofs"
   config.ssh.insert_key = true
   config.vm.provider :libvirt do |libvirt|
     libvirt.driver = "kvm"
     libvirt.uri = 'qemu:///system'
+    libvirt.memorybacking :source, :type => 'memfd'
+    libvirt.memorybacking :access, :mode => 'shared'
     libvirt.default_prefix = ""
     libvirt.cpus = 1
   end
