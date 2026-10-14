@@ -20,6 +20,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "#{LOGIN}S" do |control|
     control.vm.hostname = "#{LOGIN}S"
     control.vm.network :private_network, ip: IP_CONTROLLER
+    control.vm.provision "shell", path: "./scripts/init_server.sh", env: { "CONTROLLER_IP" => IP_CONTROLLER }
     control.vm.provider :libvirt do |libvirt|
       libvirt.memory = 1024
     end
